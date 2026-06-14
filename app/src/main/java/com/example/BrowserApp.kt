@@ -49,6 +49,7 @@ fun BrowserApp(viewModel: BrowserViewModel) {
     val bookmarks by viewModel.bookmarks.collectAsState()
     val history by viewModel.history.collectAsState()
     val quickLinks by viewModel.quickLinks.collectAsState()
+    val isKeepScreenOn by viewModel.isKeepScreenOn.collectAsState()
     val tabs = viewModel.tabs
     var showTabsDialog by remember { mutableStateOf(false) }
     var showSettingsDialog by remember { mutableStateOf(false) }
@@ -167,6 +168,7 @@ fun BrowserApp(viewModel: BrowserViewModel) {
             isDesktopMode = isDesktopMode,
             isJavaScriptEnabled = isJavaScriptEnabled,
             isYouTubeModeEnabled = isYouTubeModeEnabled,
+            isKeepScreenOn = isKeepScreenOn,
             searchEngine = viewModel.searchEngine.collectAsState().value,
             onDismiss = { showSettingsDialog = false },
             onSetThemeMode = { viewModel.setThemeMode(it) },
@@ -174,6 +176,7 @@ fun BrowserApp(viewModel: BrowserViewModel) {
             onToggleDesktopMode = { viewModel.toggleDesktopMode() },
             onToggleJavaScript = { viewModel.toggleJavaScript() },
             onToggleYouTubeMode = { viewModel.toggleYouTubeMode() },
+            onToggleKeepScreenOn = { viewModel.toggleKeepScreenOn() },
             onSelectEngine = { viewModel.setSearchEngine(it) }
         )
     }
@@ -932,6 +935,7 @@ fun SettingsDialog(
     isDesktopMode: Boolean,
     isJavaScriptEnabled: Boolean,
     isYouTubeModeEnabled: Boolean,
+    isKeepScreenOn: Boolean,
     searchEngine: String,
     onDismiss: () -> Unit,
     onSetThemeMode: (BrowserViewModel.ThemeMode) -> Unit,
@@ -939,6 +943,7 @@ fun SettingsDialog(
     onToggleDesktopMode: () -> Unit,
     onToggleJavaScript: () -> Unit,
     onToggleYouTubeMode: () -> Unit,
+    onToggleKeepScreenOn: () -> Unit,
     onSelectEngine: (String) -> Unit
 ) {
     val context = androidx.compose.ui.platform.LocalContext.current
@@ -1067,6 +1072,28 @@ fun SettingsDialog(
                             }
                         }
                         Switch(checked = isYouTubeModeEnabled, onCheckedChange = { onToggleYouTubeMode() })
+                    }
+                    
+                    Spacer(modifier = Modifier.height(16.dp))
+
+                    Row(
+                        modifier = Modifier.fillMaxWidth(),
+                        horizontalArrangement = Arrangement.SpaceBetween,
+                        verticalAlignment = Alignment.CenterVertically
+                    ) {
+                        Column(modifier = Modifier.weight(1f).padding(end = 8.dp)) {
+                            Text(
+                                text = "Keep Screen Awake",
+                                style = MaterialTheme.typography.bodyMedium,
+                                fontWeight = androidx.compose.ui.text.font.FontWeight.Bold
+                            )
+                            Text(
+                                text = "Prevent screen timeout while using the browser",
+                                style = MaterialTheme.typography.labelSmall,
+                                color = MaterialTheme.colorScheme.onSurfaceVariant
+                            )
+                        }
+                        Switch(checked = isKeepScreenOn, onCheckedChange = { onToggleKeepScreenOn() })
                     }
                     
                     Spacer(modifier = Modifier.height(16.dp))

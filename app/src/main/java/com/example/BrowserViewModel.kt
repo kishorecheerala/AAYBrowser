@@ -60,6 +60,10 @@ class BrowserViewModel : ViewModel() {
     private val _history = MutableStateFlow<List<HistoryItem>>(emptyList())
     val history: StateFlow<List<HistoryItem>> = _history.asStateFlow()
 
+    // Keep Screen On (Wake Lock)
+    private val _isKeepScreenOn = MutableStateFlow(true)
+    val isKeepScreenOn: StateFlow<Boolean> = _isKeepScreenOn.asStateFlow()
+
     // Dynamic Quick Links
     private val _quickLinks = MutableStateFlow<List<Bookmark>>(listOf(
         Bookmark("YouTube", "https://www.youtube.com"),
@@ -167,6 +171,10 @@ class BrowserViewModel : ViewModel() {
 
     fun toggleYouTubeMode() {
         _isYouTubeModeEnabled.value = !_isYouTubeModeEnabled.value
+    }
+
+    fun toggleKeepScreenOn() {
+        _isKeepScreenOn.value = !_isKeepScreenOn.value
     }
 
     fun toggleBookmark(title: String, url: String) {
