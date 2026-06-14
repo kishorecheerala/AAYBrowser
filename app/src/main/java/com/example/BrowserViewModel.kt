@@ -1,13 +1,18 @@
 package com.example
 
 import androidx.compose.runtime.mutableStateListOf
-import androidx.compose.runtime.mutableStateOf
 import androidx.lifecycle.ViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
 
 data class Bookmark(val title: String, val url: String)
+
+data class HistoryItem(
+    val title: String, 
+    val url: String, 
+    val timestamp: Long = System.currentTimeMillis()
+)
 
 data class TabState(
     val id: Long = System.currentTimeMillis(),
@@ -51,6 +56,18 @@ class BrowserViewModel : ViewModel() {
     private val _bookmarks = MutableStateFlow<List<Bookmark>>(emptyList())
     val bookmarks: StateFlow<List<Bookmark>> = _bookmarks.asStateFlow()
 
+    // History features
+    private val _history = MutableStateFlow<List<HistoryItem>>(emptyList())
+    val history: StateFlow<List<HistoryItem>> = _history.asStateFlow()
+
+    // Dynamic Quick Links
+    private val _quickLinks = MutableStateFlow<List<Bookmark>>(listOf(
+        Bookmark("YouTube", "https://www.youtube.com"),
+        Bookmark("Wikipedia", "https://en.wikipedia.org"),
+        Bookmark("Google", "https://www.google.com")
+    ))
+    val quickLinks: StateFlow<List<Bookmark>> = _quickLinks.asStateFlow()
+
     val currentTab: TabState?
         get() = _tabs.getOrNull(_currentTabIndex.value)
 
@@ -67,19 +84,30 @@ class BrowserViewModel : ViewModel() {
             val updated = it.copy(url = finalUrl)
             _tabs[_currentTabIndex.value] = updated
         }
+        
+        if (finalUrl.isNotEmpty()) {
+            addToHistory("", finalUrl)
+        }
     }
 
     fun onTabUrlChanged(url: String) {
-         currentTab?.let {
+        currentTab?.let {
             val updated = it.copy(url = url)
             _tabs[_currentTabIndex.value] = updated
+        }
+        if (url.isNotEmpty()) {
+            addToHistory(currentTab?.title ?: "", url)
         }
     }
 
     fun onTabTitleChanged(title: String) {
-         currentTab?.let {
+        currentTab?.let {
             val updated = it.copy(title = title)
             _tabs[_currentTabIndex.value] = updated
+            if (it.url.isNotEmpty()) {
+                updateHistoryTitle(it.url, title)
+                addToHistory(title, it.url)
+            }
         }
     }
     
@@ -153,5 +181,49 @@ class BrowserViewModel : ViewModel() {
 
     fun isBookmarked(url: String): Boolean {
         return _bookmarks.value.any { it.url == url }
+    }
+
+    // History Helpers
+    private fun addToHistory(title: String, url: String) {
+        if (url.isEmpty() || url == "about:blank") return
+        val current = _history.value
+        val filtered = current.filter { it.url != url }
+        val finalTitle = title.ifEmpty { 
+            url.removePrefix("https://").removePrefix("http://").removePrefix("www.").substringBefore("/") 
+        }
+        _history.value = listOf(HistoryItem(finalTitle, url)) + filtered
+    }
+
+    private fun updateHistoryTitle(url: String, title: String) {
+        if (url.isEmpty() || title.isEmpty()) return
+        val current = _history.value
+        _history.value = current.map {
+            if (it.url == url) it.copy(title = title) else it
+        }
+    }
+
+    fun deleteHistoryItem(url: String) {
+        _history.value = _history.value.filter { it.url != url }
+    }
+
+    fun clearHistory() {
+        _history.value = emptyList()
+    }
+
+    // Quick Links Helpers
+    fun addQuickLink(title: String, url: String) {
+        if (url.isEmpty()) return
+        val formattedUrl = if (url.startsWith("http://") || url.startsWith("https://")) url else "https://$url"
+        val current = _quickLinks.value
+        if (current.none { it.url == formattedUrl }) {
+            val finalTitle = title.ifEmpty { 
+                formattedUrl.removePrefix("https://").removePrefix("http://").removePrefix("www.").substringBefore("/") 
+            }
+            _quickLinks.value = current + Bookmark(finalTitle, formattedUrl)
+        }
+    }
+
+    fun deleteQuickLink(url: String) {
+        _quickLinks.value = _quickLinks.value.filter { it.url != url }
     }
 }

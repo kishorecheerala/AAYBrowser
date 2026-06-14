@@ -2,32 +2,35 @@ package com.example.ui.theme
 
 import androidx.compose.ui.graphics.Color
 
-val GeometricPrimary = Color(0xFF005FAF)
+// Premium Light Theme Colors (Clean minimalism)
+val GeometricPrimary = Color(0xFF0F172A) // Slate 900
 val GeometricOnPrimary = Color(0xFFFFFFFF)
-val GeometricPrimaryContainer = Color(0xFFDDE2F9)
-val GeometricOnPrimaryContainer = Color(0xFF001D36)
+val GeometricPrimaryContainer = Color(0xFFE2E8F0) // Slate 200
+val GeometricOnPrimaryContainer = Color(0xFF0F172A)
 
-val GeometricBackground = Color(0xFFF7F9FF)
-val GeometricOnBackground = Color(0xFF191C20)
+val GeometricBackground = Color(0xFFF8FAFC) // Slate 50
+val GeometricOnBackground = Color(0xFF0F172A)
 
 val GeometricSurface = Color(0xFFFFFFFF)
-val GeometricOnSurface = Color(0xFF191C20)
-val GeometricSurfaceVariant = Color(0xFFF0F0F7) // Tab background from HTML
-val GeometricOnSurfaceVariant = Color(0xFF44474E)
-val GeometricOutline = Color(0xFFE0E2EC) // Borders
-val GeometricSecondary = Color(0xFFBAC6EA) // Used as pill bg in html
+val GeometricOnSurface = Color(0xFF0F172A)
+val GeometricSurfaceVariant = Color(0xFFF1F5F9) // Slate 100
+val GeometricOnSurfaceVariant = Color(0xFF64748B) // Slate 500
+val GeometricOutline = Color(0xFFE2E8F0) // Slate 200
+val GeometricSecondary = Color(0xFF64748B)
 
-val GeometricPrimaryDark = Color(0xFFA6C8FF)
-val GeometricOnPrimaryDark = Color(0xFF00315F)
-val GeometricPrimaryContainerDark = Color(0xFF004786)
-val GeometricOnPrimaryContainerDark = Color(0xFFD6E3FF)
+// Premium Obsidian Space Dark Theme Colors
+val GeometricPrimaryDark = Color(0xFF38BDF8) // Electric Sky Blue
+val GeometricOnPrimaryDark = Color(0xFF030712) // Near Black
+val GeometricPrimaryContainerDark = Color(0xFF1E293B) // Dark Slate
+val GeometricOnPrimaryContainerDark = Color(0xFFE2E8F0)
 
-val GeometricBackgroundDark = Color(0xFF111418)
-val GeometricOnBackgroundDark = Color(0xFFE2E2E9)
+val GeometricBackgroundDark = Color(0xFF080B10) // Obsidian Dark
+val GeometricOnBackgroundDark = Color(0xFFF1F5F9)
 
-val GeometricSurfaceDark = Color(0xFF111418)
-val GeometricOnSurfaceDark = Color(0xFFE2E2E9)
-val GeometricSurfaceVariantDark = Color(0xFF44474E)
-val GeometricOnSurfaceVariantDark = Color(0xFFC4C6D0)
-val GeometricOutlineDark = Color(0xFF8E9099)
-val GeometricSecondaryDark = Color(0xFF535F70)
+val GeometricSurfaceDark = Color(0xFF121824) // Deep Indigo Surface Card
+val GeometricOnSurfaceDark = Color(0xFFF1F5F9)
+val GeometricSurfaceVariantDark = Color(0xFF1E293B) // Darker variant card
+val GeometricOnSurfaceVariantDark = Color(0xFF94A3B8) // Muted Slate
+val GeometricOutlineDark = Color(0xFF334155) // Cyan-grey borders
+val GeometricSecondaryDark = Color(0xFF38BDF8)
+

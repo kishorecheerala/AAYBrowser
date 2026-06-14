@@ -47,6 +47,8 @@ fun BrowserApp(viewModel: BrowserViewModel) {
     val isJavaScriptEnabled by viewModel.isJavaScriptEnabled.collectAsState()
     val isYouTubeModeEnabled by viewModel.isYouTubeModeEnabled.collectAsState()
     val bookmarks by viewModel.bookmarks.collectAsState()
+    val history by viewModel.history.collectAsState()
+    val quickLinks by viewModel.quickLinks.collectAsState()
     val tabs = viewModel.tabs
     var showTabsDialog by remember { mutableStateOf(false) }
     var showSettingsDialog by remember { mutableStateOf(false) }
@@ -88,8 +90,14 @@ fun BrowserApp(viewModel: BrowserViewModel) {
             if (currentTab.url.isEmpty()) {
                 StartPage(
                     bookmarks = bookmarks,
+                    history = history,
+                    quickLinks = quickLinks,
                     onSearch = { query -> viewModel.loadUrl(query) },
-                    onQuickLink = { url -> viewModel.loadUrl(url) }
+                    onQuickLink = { url -> viewModel.loadUrl(url) },
+                    onDeleteHistoryItem = { url -> viewModel.deleteHistoryItem(url) },
+                    onClearHistory = { viewModel.clearHistory() },
+                    onAddQuickLink = { title, url -> viewModel.addQuickLink(title, url) },
+                    onDeleteQuickLink = { url -> viewModel.deleteQuickLink(url) }
                 )
             } else {
                 ConfiguredWebView(
@@ -390,154 +398,382 @@ fun BrowserBottomBar(
 @Composable
 fun StartPage(
     bookmarks: List<Bookmark>,
+    history: List<HistoryItem>,
+    quickLinks: List<Bookmark>,
     onSearch: (String) -> Unit,
-    onQuickLink: (String) -> Unit
+    onQuickLink: (String) -> Unit,
+    onDeleteHistoryItem: (String) -> Unit,
+    onClearHistory: () -> Unit,
+    onAddQuickLink: (String, String) -> Unit,
+    onDeleteQuickLink: (String) -> Unit
 ) {
     var query by remember { mutableStateOf("") }
+    var showAddQuickLinkDialog by remember { mutableStateOf(false) }
+    var newTitle by remember { mutableStateOf("") }
+    var newUrl by remember { mutableStateOf("") }
+    var isSearchFocused by remember { mutableStateOf(false) }
 
-    Column(
+    androidx.compose.foundation.lazy.LazyColumn(
         modifier = Modifier
             .fillMaxSize()
             .background(MaterialTheme.colorScheme.background)
-            .padding(16.dp),
+            .padding(horizontal = 20.dp),
+        contentPadding = PaddingValues(top = 24.dp, bottom = 40.dp),
         horizontalAlignment = Alignment.CenterHorizontally,
-        verticalArrangement = Arrangement.Center
+        verticalArrangement = Arrangement.spacedBy(24.dp)
     ) {
-        // Hero Section using Geometric Balance card style
-        Surface(
-            shape = RoundedCornerShape(28.dp),
-            color = MaterialTheme.colorScheme.primaryContainer,
-            modifier = Modifier.fillMaxWidth()
-        ) {
-            Column(
-                modifier = Modifier.padding(24.dp),
-                horizontalAlignment = Alignment.CenterHorizontally
-            ) {
+        // Hero Brand Section
+        item {
+            Column(horizontalAlignment = Alignment.CenterHorizontally) {
+                // Glassmorphic Glowing Logo Card
                 Box(
                     modifier = Modifier
-                        .size(64.dp)
-                        .clip(RoundedCornerShape(16.dp))
-                        .background(MaterialTheme.colorScheme.primary),
+                        .size(80.dp)
+                        .clip(RoundedCornerShape(24.dp))
+                        .background(
+                            androidx.compose.ui.graphics.Brush.linearGradient(
+                                colors = listOf(
+                                    Color(0xFF38BDF8), // Electric blue
+                                    Color(0xFFF43F5E)  // Youtube/Rose red
+                                )
+                            )
+                        )
+                        .padding(2.dp),
                     contentAlignment = Alignment.Center
                 ) {
-                    Icon(
-                        imageVector = Icons.Filled.Language,
-                        contentDescription = null,
-                        modifier = Modifier.size(32.dp),
-                        tint = MaterialTheme.colorScheme.onPrimary
-                    )
+                    Box(
+                        modifier = Modifier
+                            .fillMaxSize()
+                            .clip(RoundedCornerShape(22.dp))
+                            .background(Color(0xFF0F172A)),
+                        contentAlignment = Alignment.Center
+                    ) {
+                        Icon(
+                            imageVector = Icons.Filled.Language,
+                            contentDescription = null,
+                            modifier = Modifier.size(40.dp),
+                            tint = Color(0xFF38BDF8)
+                        )
+                    }
                 }
-                Spacer(modifier = Modifier.height(24.dp))
-                OutlinedTextField(
-                    value = query,
-                    onValueChange = { query = it },
-                    modifier = Modifier.fillMaxWidth().clip(RoundedCornerShape(24.dp)).background(MaterialTheme.colorScheme.surface),
-                    shape = RoundedCornerShape(24.dp),
-                    placeholder = { Text("Search the web...", color = MaterialTheme.colorScheme.onSurfaceVariant) },
-                    leadingIcon = { Icon(Icons.Filled.Search, contentDescription = null, tint = MaterialTheme.colorScheme.primary) },
-                    keyboardOptions = KeyboardOptions(imeAction = ImeAction.Search),
-                    keyboardActions = KeyboardActions(
-                        onSearch = { onSearch(query) }
+                Spacer(modifier = Modifier.height(16.dp))
+                Text(
+                    text = "AAYBrowser",
+                    style = MaterialTheme.typography.headlineMedium.copy(
+                        fontWeight = androidx.compose.ui.text.font.FontWeight.ExtraBold,
+                        letterSpacing = 0.5.sp
                     ),
-                    singleLine = true,
-                    colors = OutlinedTextFieldDefaults.colors(
-                        focusedBorderColor = MaterialTheme.colorScheme.primary,
-                        unfocusedBorderColor = MaterialTheme.colorScheme.outline,
-                        focusedContainerColor = MaterialTheme.colorScheme.surface,
-                        unfocusedContainerColor = MaterialTheme.colorScheme.surface
-                    )
+                    color = MaterialTheme.colorScheme.onBackground
+                )
+                Text(
+                    text = "Android Auto YouTube Companion",
+                    style = MaterialTheme.typography.bodySmall,
+                    color = MaterialTheme.colorScheme.onSurfaceVariant
                 )
             }
         }
-        
-        Spacer(modifier = Modifier.height(24.dp))
-        
-        // Quick Links Section using Geometric Balance layout structure
-        Surface(
-            shape = RoundedCornerShape(24.dp),
-            color = MaterialTheme.colorScheme.surface,
-            border = androidx.compose.foundation.BorderStroke(1.dp, MaterialTheme.colorScheme.outline),
-            modifier = Modifier.fillMaxWidth()
-        ) {
-            Column {
-                Row(
-                    modifier = Modifier
-                        .fillMaxWidth()
-                        .background(MaterialTheme.colorScheme.surfaceVariant.copy(alpha = 0.5f))
-                        .padding(horizontal = 16.dp, vertical = 12.dp),
-                    horizontalArrangement = Arrangement.SpaceBetween,
-                    verticalAlignment = Alignment.CenterVertically
-                ) {
-                    Text(
-                        text = "QUICK LINKS",
-                        style = MaterialTheme.typography.labelSmall.copy(
-                            fontWeight = androidx.compose.ui.text.font.FontWeight.Bold,
-                            letterSpacing = 1.sp
+
+        // Glowing Premium Search Bar
+        item {
+            val outlineColor = if (isSearchFocused) {
+                MaterialTheme.colorScheme.primary
+            } else {
+                MaterialTheme.colorScheme.outline
+            }
+            val containerColor = if (isSearchFocused) {
+                MaterialTheme.colorScheme.surface
+            } else {
+                MaterialTheme.colorScheme.surface.copy(alpha = 0.7f)
+            }
+
+            Surface(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .height(60.dp),
+                shape = RoundedCornerShape(30.dp),
+                color = containerColor,
+                border = androidx.compose.foundation.BorderStroke(
+                    width = if (isSearchFocused) 2.dp else 1.dp,
+                    color = outlineColor
+                ),
+                shadowElevation = if (isSearchFocused) 8.dp else 2.dp
+            ) {
+                Box(contentAlignment = Alignment.CenterStart) {
+                    OutlinedTextField(
+                        value = query,
+                        onValueChange = { query = it },
+                        modifier = Modifier
+                            .fillMaxSize()
+                            .onFocusChanged { isSearchFocused = it.isFocused },
+                        placeholder = { Text("Search the web or enter address...", color = MaterialTheme.colorScheme.onSurfaceVariant) },
+                        leadingIcon = { 
+                            Icon(
+                                Icons.Filled.Search, 
+                                contentDescription = null, 
+                                tint = if (isSearchFocused) MaterialTheme.colorScheme.primary else MaterialTheme.colorScheme.onSurfaceVariant
+                            ) 
+                        },
+                        trailingIcon = {
+                            if (query.isNotEmpty()) {
+                                IconButton(onClick = { query = "" }) {
+                                    Icon(Icons.Filled.Clear, contentDescription = "Clear", tint = MaterialTheme.colorScheme.onSurfaceVariant)
+                                }
+                            }
+                        },
+                        keyboardOptions = KeyboardOptions(
+                            keyboardType = KeyboardType.Uri,
+                            imeAction = ImeAction.Search
                         ),
-                        color = MaterialTheme.colorScheme.onSurfaceVariant
+                        keyboardActions = KeyboardActions(
+                            onSearch = { if (query.isNotEmpty()) onSearch(query) }
+                        ),
+                        singleLine = true,
+                        colors = OutlinedTextFieldDefaults.colors(
+                            focusedBorderColor = Color.Transparent,
+                            unfocusedBorderColor = Color.Transparent,
+                            focusedContainerColor = Color.Transparent,
+                            unfocusedContainerColor = Color.Transparent
+                        )
                     )
-                }
-                androidx.compose.material3.HorizontalDivider(color = MaterialTheme.colorScheme.outline)
-                Row(
-                    modifier = Modifier
-                        .fillMaxWidth()
-                        .padding(16.dp),
-                    horizontalArrangement = Arrangement.SpaceEvenly
-                ) {
-                    QuickLinkItem("YouTube", Icons.Filled.PlayArrow) { onQuickLink("https://www.youtube.com") }
-                    QuickLinkItem("Wiki", Icons.AutoMirrored.Filled.MenuBook) { onQuickLink("https://en.wikipedia.org") }
-                    QuickLinkItem("Google", Icons.Filled.Public) { onQuickLink("https://www.google.com") }
                 }
             }
         }
-        
-        if (bookmarks.isNotEmpty()) {
-            Spacer(modifier = Modifier.height(24.dp))
+
+        // Quick Links Section with Customizable Options
+        item {
             Surface(
                 shape = RoundedCornerShape(24.dp),
                 color = MaterialTheme.colorScheme.surface,
                 border = androidx.compose.foundation.BorderStroke(1.dp, MaterialTheme.colorScheme.outline),
                 modifier = Modifier.fillMaxWidth()
             ) {
-                Column {
+                Column(modifier = Modifier.padding(16.dp)) {
                     Row(
-                        modifier = Modifier
-                            .fillMaxWidth()
-                            .background(MaterialTheme.colorScheme.surfaceVariant.copy(alpha = 0.5f))
-                            .padding(horizontal = 16.dp, vertical = 12.dp),
+                        modifier = Modifier.fillMaxWidth(),
                         horizontalArrangement = Arrangement.SpaceBetween,
                         verticalAlignment = Alignment.CenterVertically
                     ) {
                         Text(
-                            text = "BOOKMARKS",
+                            text = "SPEED DIAL",
                             style = MaterialTheme.typography.labelSmall.copy(
                                 fontWeight = androidx.compose.ui.text.font.FontWeight.Bold,
                                 letterSpacing = 1.sp
                             ),
                             color = MaterialTheme.colorScheme.onSurfaceVariant
                         )
+                        IconButton(onClick = { showAddQuickLinkDialog = true }, modifier = Modifier.size(24.dp)) {
+                            Icon(Icons.Filled.Add, contentDescription = "Add Link", tint = MaterialTheme.colorScheme.primary)
+                        }
                     }
-                    androidx.compose.material3.HorizontalDivider(color = MaterialTheme.colorScheme.outline)
-                    Column(
-                        modifier = Modifier
-                            .fillMaxWidth()
-                            .padding(16.dp),
-                        verticalArrangement = Arrangement.spacedBy(12.dp)
-                    ) {
-                        bookmarks.forEach { bookmark ->
+                    Spacer(modifier = Modifier.height(16.dp))
+                    
+                    // Grid Layout using Row combinations
+                    val itemsPerRow = 4
+                    val chunkedList = quickLinks.chunked(itemsPerRow)
+                    Column(verticalArrangement = Arrangement.spacedBy(16.dp)) {
+                        chunkedList.forEach { rowItems ->
                             Row(
-                                modifier = Modifier
-                                    .fillMaxWidth()
-                                    .clip(RoundedCornerShape(12.dp))
-                                    .clickable { onQuickLink(bookmark.url) }
-                                    .padding(8.dp),
-                                verticalAlignment = Alignment.CenterVertically
+                                modifier = Modifier.fillMaxWidth(),
+                                horizontalArrangement = Arrangement.SpaceAround
                             ) {
-                                Icon(Icons.Filled.Favorite, contentDescription = null, tint = MaterialTheme.colorScheme.primary, modifier = Modifier.size(24.dp))
-                                Spacer(modifier = Modifier.width(16.dp))
-                                Column {
-                                    Text(bookmark.title, style = MaterialTheme.typography.bodyMedium, fontWeight = androidx.compose.ui.text.font.FontWeight.Medium, maxLines = 1, overflow = TextOverflow.Ellipsis)
-                                    Text(bookmark.url, style = MaterialTheme.typography.labelSmall, color = MaterialTheme.colorScheme.onSurfaceVariant, maxLines = 1, overflow = TextOverflow.Ellipsis)
+                                rowItems.forEach { link ->
+                                    Box(modifier = Modifier.weight(1f), contentAlignment = Alignment.Center) {
+                                        Column(
+                                            horizontalAlignment = Alignment.CenterHorizontally,
+                                            modifier = Modifier
+                                                .clip(RoundedCornerShape(12.dp))
+                                                .clickable { onQuickLink(link.url) }
+                                                .padding(8.dp)
+                                        ) {
+                                            Box(
+                                                modifier = Modifier
+                                                    .size(48.dp)
+                                                    .clip(RoundedCornerShape(16.dp))
+                                                    .background(MaterialTheme.colorScheme.surfaceVariant),
+                                                contentAlignment = Alignment.Center
+                                            ) {
+                                                // Icon selection matching name
+                                                val icon = when {
+                                                    link.title.lowercase().contains("youtube") -> Icons.Filled.PlayArrow
+                                                    link.title.lowercase().contains("wikipedia") || link.title.lowercase().contains("wiki") -> Icons.AutoMirrored.Filled.MenuBook
+                                                    link.title.lowercase().contains("google") -> Icons.Filled.Public
+                                                    else -> Icons.Filled.Bookmark
+                                                }
+                                                val iconColor = if (link.title.lowercase().contains("youtube")) {
+                                                    Color(0xFFFF0000)
+                                                } else {
+                                                    MaterialTheme.colorScheme.primary
+                                                }
+                                                Icon(icon, contentDescription = link.title, tint = iconColor, modifier = Modifier.size(24.dp))
+                                            }
+                                            Spacer(modifier = Modifier.height(8.dp))
+                                            Text(
+                                                text = link.title, 
+                                                style = MaterialTheme.typography.labelSmall, 
+                                                maxLines = 1,
+                                                overflow = TextOverflow.Ellipsis,
+                                                fontWeight = androidx.compose.ui.text.font.FontWeight.Medium
+                                            )
+                                        }
+                                        // Miniature Delete overlay icon on long press or similar could go here, but speed dial delete can also be accessed via delete dialog/context. Let's provide long press to delete
+                                        Box(
+                                            modifier = Modifier
+                                                .size(20.dp)
+                                                .align(Alignment.TopEnd)
+                                                .clip(CircleShape)
+                                                .background(MaterialTheme.colorScheme.surfaceVariant)
+                                                .clickable { onDeleteQuickLink(link.url) },
+                                            contentAlignment = Alignment.Center
+                                        ) {
+                                            Icon(Icons.Filled.Close, contentDescription = "Delete", modifier = Modifier.size(12.dp), tint = MaterialTheme.colorScheme.onSurfaceVariant)
+                                        }
+                                    }
+                                }
+                                // Fill remaining spaces if row is not full
+                                val remainder = itemsPerRow - rowItems.size
+                                repeat(remainder) {
+                                    Spacer(modifier = Modifier.weight(1f))
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        }
+
+        // Bookmarks Section
+        if (bookmarks.isNotEmpty()) {
+            item {
+                Surface(
+                    shape = RoundedCornerShape(24.dp),
+                    color = MaterialTheme.colorScheme.surface,
+                    border = androidx.compose.foundation.BorderStroke(1.dp, MaterialTheme.colorScheme.outline),
+                    modifier = Modifier.fillMaxWidth()
+                ) {
+                    Column(modifier = Modifier.padding(16.dp)) {
+                        Text(
+                            text = "FAVORITE BOOKMARKS",
+                            style = MaterialTheme.typography.labelSmall.copy(
+                                fontWeight = androidx.compose.ui.text.font.FontWeight.Bold,
+                                letterSpacing = 1.sp
+                            ),
+                            color = MaterialTheme.colorScheme.onSurfaceVariant
+                        )
+                        Spacer(modifier = Modifier.height(12.dp))
+                        Column(verticalArrangement = Arrangement.spacedBy(8.dp)) {
+                            bookmarks.forEach { bookmark ->
+                                Row(
+                                    modifier = Modifier
+                                        .fillMaxWidth()
+                                        .clip(RoundedCornerShape(12.dp))
+                                        .clickable { onQuickLink(bookmark.url) }
+                                        .padding(8.dp),
+                                    verticalAlignment = Alignment.CenterVertically
+                                ) {
+                                    Icon(
+                                        Icons.Filled.Favorite, 
+                                        contentDescription = null, 
+                                        tint = Color(0xFFF43F5E), // Rose red for favorite
+                                        modifier = Modifier.size(20.dp)
+                                    )
+                                    Spacer(modifier = Modifier.width(12.dp))
+                                    Column(modifier = Modifier.weight(1f)) {
+                                        Text(
+                                            bookmark.title, 
+                                            style = MaterialTheme.typography.bodyMedium, 
+                                            fontWeight = androidx.compose.ui.text.font.FontWeight.Medium, 
+                                            maxLines = 1, 
+                                            overflow = TextOverflow.Ellipsis
+                                        )
+                                        Text(
+                                            bookmark.url, 
+                                            style = MaterialTheme.typography.labelSmall, 
+                                            color = MaterialTheme.colorScheme.onSurfaceVariant, 
+                                            maxLines = 1, 
+                                            overflow = TextOverflow.Ellipsis
+                                        )
+                                    }
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        }
+
+        // History Section (Clean List)
+        if (history.isNotEmpty()) {
+            item {
+                Surface(
+                    shape = RoundedCornerShape(24.dp),
+                    color = MaterialTheme.colorScheme.surface,
+                    border = androidx.compose.foundation.BorderStroke(1.dp, MaterialTheme.colorScheme.outline),
+                    modifier = Modifier.fillMaxWidth()
+                ) {
+                    Column(modifier = Modifier.padding(16.dp)) {
+                        Row(
+                            modifier = Modifier.fillMaxWidth(),
+                            horizontalArrangement = Arrangement.SpaceBetween,
+                            verticalAlignment = Alignment.CenterVertically
+                        ) {
+                            Text(
+                                text = "RECENT HISTORY",
+                                style = MaterialTheme.typography.labelSmall.copy(
+                                    fontWeight = androidx.compose.ui.text.font.FontWeight.Bold,
+                                    letterSpacing = 1.sp
+                                ),
+                                color = MaterialTheme.colorScheme.onSurfaceVariant
+                            )
+                            TextButton(onClick = onClearHistory) {
+                                Text("Clear All", style = MaterialTheme.typography.labelSmall, color = MaterialTheme.colorScheme.primary)
+                            }
+                        }
+                        Spacer(modifier = Modifier.height(8.dp))
+                        Column(verticalArrangement = Arrangement.spacedBy(8.dp)) {
+                            // Show last 8 items in history
+                            history.take(8).forEach { item ->
+                                Row(
+                                    modifier = Modifier
+                                        .fillMaxWidth()
+                                        .clip(RoundedCornerShape(12.dp))
+                                        .clickable { onQuickLink(item.url) }
+                                        .padding(vertical = 8.dp, horizontal = 4.dp),
+                                    verticalAlignment = Alignment.CenterVertically
+                                ) {
+                                    Icon(
+                                        Icons.Filled.History, 
+                                        contentDescription = null, 
+                                        tint = MaterialTheme.colorScheme.onSurfaceVariant, 
+                                        modifier = Modifier.size(20.dp)
+                                    )
+                                    Spacer(modifier = Modifier.width(12.dp))
+                                    Column(modifier = Modifier.weight(1f)) {
+                                        Text(
+                                            item.title.ifEmpty { item.url }, 
+                                            style = MaterialTheme.typography.bodyMedium, 
+                                            fontWeight = androidx.compose.ui.text.font.FontWeight.Normal, 
+                                            maxLines = 1, 
+                                            overflow = TextOverflow.Ellipsis
+                                        )
+                                        Text(
+                                            item.url, 
+                                            style = MaterialTheme.typography.labelSmall, 
+                                            color = MaterialTheme.colorScheme.onSurfaceVariant, 
+                                            maxLines = 1, 
+                                            overflow = TextOverflow.Ellipsis
+                                        )
+                                    }
+                                    IconButton(
+                                        onClick = { onDeleteHistoryItem(item.url) },
+                                        modifier = Modifier.size(32.dp)
+                                    ) {
+                                        Icon(
+                                            Icons.Filled.Close, 
+                                            contentDescription = "Delete", 
+                                            tint = MaterialTheme.colorScheme.onSurfaceVariant.copy(alpha = 0.5f),
+                                            modifier = Modifier.size(16.dp)
+                                        )
+                                    }
                                 }
                             }
                         }
@@ -546,27 +782,59 @@ fun StartPage(
             }
         }
     }
-}
 
-@Composable
-fun QuickLinkItem(label: String, icon: androidx.compose.ui.graphics.vector.ImageVector, onClick: () -> Unit) {
-    Column(
-        horizontalAlignment = Alignment.CenterHorizontally,
-        modifier = Modifier
-            .clickable(onClick = onClick)
-            .padding(8.dp)
-    ) {
-        Box(
-            modifier = Modifier
-                .size(48.dp)
-                .clip(RoundedCornerShape(16.dp))
-                .background(MaterialTheme.colorScheme.surfaceVariant),
-            contentAlignment = Alignment.Center
-        ) {
-            Icon(icon, contentDescription = label, tint = MaterialTheme.colorScheme.primary)
+    // Add Quick Link Dialog
+    if (showAddQuickLinkDialog) {
+        Dialog(onDismissRequest = { showAddQuickLinkDialog = false }) {
+            Surface(
+                shape = RoundedCornerShape(24.dp),
+                color = MaterialTheme.colorScheme.surface,
+                border = androidx.compose.foundation.BorderStroke(1.dp, MaterialTheme.colorScheme.outline),
+                modifier = Modifier.fillMaxWidth()
+            ) {
+                Column(modifier = Modifier.padding(24.dp)) {
+                    Text("Add Quick Link", style = MaterialTheme.typography.titleMedium, fontWeight = androidx.compose.ui.text.font.FontWeight.Bold)
+                    Spacer(modifier = Modifier.height(16.dp))
+                    OutlinedTextField(
+                        value = newTitle,
+                        onValueChange = { newTitle = it },
+                        label = { Text("Title") },
+                        singleLine = true,
+                        modifier = Modifier.fillMaxWidth()
+                    )
+                    Spacer(modifier = Modifier.height(12.dp))
+                    OutlinedTextField(
+                        value = newUrl,
+                        onValueChange = { newUrl = it },
+                        label = { Text("URL (e.g. google.com)") },
+                        singleLine = true,
+                        modifier = Modifier.fillMaxWidth()
+                    )
+                    Spacer(modifier = Modifier.height(24.dp))
+                    Row(
+                        modifier = Modifier.fillMaxWidth(),
+                        horizontalArrangement = Arrangement.End
+                    ) {
+                        TextButton(onClick = { showAddQuickLinkDialog = false }) {
+                            Text("Cancel")
+                        }
+                        Spacer(modifier = Modifier.width(8.dp))
+                        Button(
+                            onClick = {
+                                if (newUrl.isNotEmpty()) {
+                                    onAddQuickLink(newTitle, newUrl)
+                                    newTitle = ""
+                                    newUrl = ""
+                                    showAddQuickLinkDialog = false
+                                }
+                            }
+                        ) {
+                            Text("Add")
+                        }
+                    }
+                }
+            }
         }
-        Spacer(modifier = Modifier.height(8.dp))
-        Text(label, style = MaterialTheme.typography.labelSmall, fontWeight = androidx.compose.ui.text.font.FontWeight.Medium)
     }
 }
 
