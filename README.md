@@ -8,7 +8,7 @@ AAYBrowser is a lightweight, customizable Android web browser designed for high 
 
 The compiled application packages (APKs) are available directly on GitHub:
 
-* **[Download Latest APK (v1.0.0)](https://github.com/kishorecheerala/AAYBrowser/releases/tag/v1.0.0)** - Contains the pre-compiled, driving-friendly `AAYBrowser-debug.apk` browser package.
+* **[Download Latest APK (v1.0.0)](https://github.com/kishorecheerala/AAYBrowser/releases/tag/v1.0.0)** - Contains the pre-compiled, driving-friendly `AAYBrowser.apk` browser package.
 
 ---
 
@@ -53,7 +53,7 @@ To create a fully functional debug-signed APK suitable for local installation an
    *(Note: If Gradle is not installed locally, you can use the cached gradle binary from your Gradle home).*
 
 The output file will be generated at:
-`app/build/outputs/apk/debug/AAYBrowser-debug.apk`
+`app/build/outputs/apk/debug/AAYBrowser.apk`
 
 #### 3. Build a Release APK (or App Bundle)
 For release compilation, configure your keystore in `app/build.gradle.kts` and run:
