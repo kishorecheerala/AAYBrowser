@@ -14,15 +14,20 @@ import org.robolectric.annotation.GraphicsMode
 
 @RunWith(RobolectricTestRunner::class)
 @GraphicsMode(GraphicsMode.Mode.NATIVE)
-@Config(qualifiers = RobolectricDeviceQualifiers.Pixel8, sdk = [36])
-class GreetingScreenshotTest {
+@Config(qualifiers = RobolectricDeviceQualifiers.Pixel8, sdk = [34])
+class BrowserScreenshotTest {
 
   @get:Rule val composeTestRule = createComposeRule()
 
   @Test
-  fun greeting_screenshot() {
-    composeTestRule.setContent { MyApplicationTheme { Greeting("Robolectric") } }
+  fun startPage_screenshot() {
+    composeTestRule.setContent {
+      MyApplicationTheme(darkTheme = true) {
+        val viewModel = BrowserViewModel()
+        BrowserApp(viewModel = viewModel)
+      }
+    }
 
-    composeTestRule.onRoot().captureRoboImage(filePath = "src/test/screenshots/greeting.png")
+    composeTestRule.onRoot().captureRoboImage(filePath = "src/test/screenshots/browser_start_page_dark.png")
   }
 }
