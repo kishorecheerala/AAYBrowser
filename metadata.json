@@ -1,0 +1,6 @@
+{
+  "name": "AAYBrowser",
+  "description": "Android Auto YouTube Browser - A custom web browser built with Jetpack Compose featuring dedicated YouTube distraction-free Driving Mode.",
+  "requestFramePermissions": [],
+  "majorCapabilities": ["MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"]
+}
