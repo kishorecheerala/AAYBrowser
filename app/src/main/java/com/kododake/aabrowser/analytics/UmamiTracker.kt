@@ -37,21 +37,7 @@ class UmamiTracker(context: Context) {
     }
 
     fun trackEvent(eventName: String, eventData: Map<String, String>? = null) {
-        val payload = buildJsonObject {
-            put("type", "event")
-            put("payload", buildJsonObject {
-                put("website", WEBSITE_ID)
-                put("url", "app://v$appVersion")
-                put("hostname", "aabrowser.internal")
-                put("name", eventName)
-                put("data", buildJsonObject {
-                    put("version", appVersion)
-                    put("user_id", anonymousId)
-                    eventData?.forEach { (key, value) -> put(key, value) }
-                })
-            })
-        }
-        sendPayload(payload)
+        // Telemetry disabled for privacy and security compliance
     }
 
     private fun sendPayload(payload: kotlinx.serialization.json.JsonObject) {
