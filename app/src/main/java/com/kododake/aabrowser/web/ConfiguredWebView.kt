@@ -97,6 +97,17 @@ fun configureWebView(
         //setLayerType(View.LAYER_TYPE_HARDWARE, null)
 
         webViewClient = object : WebViewClient() {
+            override fun shouldInterceptRequest(
+                view: WebView,
+                request: WebResourceRequest
+            ): WebResourceResponse? {
+                val host = request.url?.host?.lowercase().orEmpty()
+                if (AD_SERVERS.any { host.contains(it) }) {
+                    return WebResourceResponse("text/plain", "UTF-8", java.io.ByteArrayInputStream(ByteArray(0)))
+                }
+                return super.shouldInterceptRequest(view, request)
+            }
+
             override fun shouldOverrideUrlLoading(view: WebView, request: WebResourceRequest): Boolean {
                 val uri = request.url
                 if (handleCleartextIfNeeded(view, uri, callbacks, onPageStart = false)) {
@@ -138,7 +149,12 @@ fun configureWebView(
             override fun onPageFinished(view: WebView, url: String?) {
                 super.onPageFinished(view, url)
                 view.evaluateJavascript(SpeechRecognitionBridge.POLYFILL_JS, null)
-                url?.let(callbacks.onUrlChange)
+                url?.let { currentUrl ->
+                    callbacks.onUrlChange(currentUrl)
+                    if (currentUrl.contains("youtube.com") || currentUrl.contains("youtu.be")) {
+                        view.evaluateJavascript(YOUTUBE_CSS_INJECTION, null)
+                    }
+                }
             }
 
             override fun onReceivedError(
@@ -460,3 +476,32 @@ private const val MOBILE_CHROME_UA = "Mozilla/5.0 (Linux; Android 10; K) AppleWe
 private const val WINDOWS_CHROME_UA = "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/${CHROME_VERSION} Safari/537.36"
 private const val SAFARI_MAC_UA = "Mozilla/5.0 (Macintosh; Intel Mac OS X 14_0_0) AppleWebKit/605.1.15 (KHTML, like Gecko) Version/17.0 Safari/605.1.15"
 private const val SAFARI_IOS_UA = "Mozilla/5.0 (iPhone; CPU iPhone OS 17_0 like Mac OS X) AppleWebKit/605.1.15 (KHTML, like Gecko) Version/17.0 Mobile/15E148 Safari/604.1"
+
+private const val YOUTUBE_CSS_INJECTION = """
+    (function() {
+        var parent = document.getElementsByTagName('head').item(0);
+        if (!parent) return;
+        var style = document.getElementById('driving-mode-style');
+        if (!style) {
+            style = document.createElement('style');
+            style.id = 'driving-mode-style';
+            style.type = 'text/css';
+            style.innerHTML = '#secondary, ytd-watch-next-secondary-results-renderer, ytm-item-section-renderer[section-identifier="related-items"], ytm-related-videos, #related, .related-list, #comments, ytd-comments, ytm-comments-entry-point-header-renderer, ytm-item-section-renderer[section-identifier="comments"], .comment-section, ytm-enrichment-section-target-renderer, .ytm-promoted-sparkles-web-renderer, .yt-spec-button-shape-next--call-to-action, ytd-mealbar-promo-renderer { display: none !important; }';
+            parent.appendChild(style);
+        }
+    })()
+"""
+
+private val AD_SERVERS = setOf(
+    "googleads.g.doubleclick.net",
+    "adclick.g.doubleclick.net",
+    "pagead2.googlesyndication.com",
+    "www.googleadservices.com",
+    "pubads.g.doubleclick.net",
+    "securepubads.g.doubleclick.net",
+    "ad.doubleclick.net",
+    "ads.youtube.com",
+    "s0.2mdn.net",
+    "tpc.googlesyndication.com"
+)
+

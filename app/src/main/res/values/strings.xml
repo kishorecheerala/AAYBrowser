@@ -1,8 +1,8 @@
 <resources>
-    <string name="app_name">AABrowser</string>
-    <string name="app_credit">AABrowser — by Kododake</string>
-    <string name="author_name">Kododake</string>
-    <string name="menu_title">AABrowser</string>
+    <string name="app_name">AAYBrowser</string>
+    <string name="app_credit">AAYBrowser — YouTube &amp; Web Browser for Android Auto</string>
+    <string name="author_name">Kododake &amp; Kishore</string>
+    <string name="menu_title">AAYBrowser</string>
     <string name="menu_close">Close</string>
     <string name="menu_address_label">Address or search</string>
     

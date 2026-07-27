@@ -169,6 +169,7 @@ class MainActivity : AppCompatActivity() {
     }
 
     override fun onCreate(savedInstanceState: Bundle?) {
+        window.addFlags(android.view.WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON)
         DynamicColors.applyToActivityIfAvailable(this)
         AppCompatDelegate.setDefaultNightMode(BrowserPreferences.getThemeMode(this).nightMode)
         super.onCreate(savedInstanceState)
