@@ -51,6 +51,7 @@
                 <category android:name="android.intent.category.DEFAULT" />
                 <category android:name="android.intent.category.CAR_LAUNCHER" />
                 <category android:name="androidx.car.app.category.NAVIGATION" />
+                <category android:name="com.google.android.gms.car.category.CATEGORY_MEDIA" />
                 <category android:name="android.intent.category.APP_MAPS" />
             </intent-filter>
             <intent-filter>
@@ -58,6 +59,7 @@
                 <category android:name="android.intent.category.DEFAULT" />
                 <category android:name="android.intent.category.CAR_LAUNCHER" />
                 <category android:name="androidx.car.app.category.NAVIGATION" />
+                <category android:name="com.google.android.gms.car.category.CATEGORY_MEDIA" />
                 <category android:name="android.intent.category.APP_MAPS" />
 
                 <data android:scheme="http" />
