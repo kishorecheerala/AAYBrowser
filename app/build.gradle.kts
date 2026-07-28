@@ -10,7 +10,7 @@ plugins {
 }
 
 android {
-    namespace = "com.kododake.aabrowser"
+    namespace = "com.kishorecheerala.aaybrowser"
     compileSdk = 37
 
     defaultConfig {
@@ -122,7 +122,6 @@ dependencies {
     implementation(libs.okhttp)
     implementation(libs.kotlinx.serialization.json)
     implementation(libs.google.oss.licenses)
-    implementation("com.github.woheller69:FreeDroidWarn:V1.+")
 
     testImplementation(libs.junit)
     androidTestImplementation(libs.androidx.junit)
