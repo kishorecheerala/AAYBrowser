@@ -14,7 +14,7 @@ android {
     compileSdk = 37
 
     defaultConfig {
-        applicationId = "com.kishorecheerala.aaybrowser"
+        applicationId = "com.kododake.aabrowser"
         minSdk = 35
         targetSdk = 37
         versionCode = 9
