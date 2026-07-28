@@ -36,11 +36,19 @@ android {
                     ?: System.getenv(key)
 
             val storeFilePath = getProp("RELEASE_STORE_FILE") ?: "../release.keystore"
-            storeFile = rootProject.file(storeFilePath)
-
-            getProp("RELEASE_STORE_PASSWORD")?.let { storePassword = it }
-            getProp("RELEASE_KEY_ALIAS")?.let { keyAlias = it }
-            getProp("RELEASE_KEY_PASSWORD")?.let { keyPassword = it }
+            val storeFileObj = rootProject.file(storeFilePath)
+            if (storeFileObj.exists()) {
+                storeFile = storeFileObj
+                getProp("RELEASE_STORE_PASSWORD")?.let { storePassword = it }
+                getProp("RELEASE_KEY_ALIAS")?.let { keyAlias = it }
+                getProp("RELEASE_KEY_PASSWORD")?.let { keyPassword = it }
+            } else {
+                val debugConfig = getByName("debug")
+                storeFile = debugConfig.storeFile
+                storePassword = debugConfig.storePassword
+                keyAlias = debugConfig.keyAlias
+                keyPassword = debugConfig.keyPassword
+            }
         }
     }
 

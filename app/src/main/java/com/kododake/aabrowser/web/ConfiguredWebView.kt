@@ -479,6 +479,10 @@ private const val SAFARI_IOS_UA = "Mozilla/5.0 (iPhone; CPU iPhone OS 17_0 like 
 
 private const val YOUTUBE_CSS_INJECTION = """
     (function() {
+        try {
+            Object.defineProperty(document, 'hidden', { get: function() { return false; }, configurable: true });
+            Object.defineProperty(document, 'visibilityState', { get: function() { return 'visible'; }, configurable: true });
+        } catch(e) {}
         var parent = document.getElementsByTagName('head').item(0);
         if (!parent) return;
         var style = document.getElementById('driving-mode-style');

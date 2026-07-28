@@ -211,7 +211,6 @@ class MainActivity : AppCompatActivity() {
 
     override fun onPause() {
         uiManager.exitFullscreen()
-        webView?.onPause()
         super.onPause()
     }
 
