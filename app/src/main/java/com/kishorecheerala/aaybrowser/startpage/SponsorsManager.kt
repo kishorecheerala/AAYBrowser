@@ -55,8 +55,9 @@ class SponsorsManager(
     )
 
     fun setupSponsorsSection() {
-        setupGithubSponsorship()
-        loadSponsorsList()
+        binding.startPageSponsorsCard.visibility = View.GONE
+        binding.startPageSponsorsListCard.visibility = View.GONE
+        binding.startPageSponsorsHiddenPienCard.visibility = View.GONE
     }
 
     private fun setupGithubSponsorship() {
