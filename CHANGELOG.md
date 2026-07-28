@@ -2,13 +2,13 @@
 
 All notable changes to **AAYBrowser** will be documented in this file.
 
-## [v2.2] - 2026-07-28
+## [v2.3] - 2026-07-28
 
-### 🚗 Driving Playback & Safety Lock Bypasses
-- **Removed Motion Lockouts**: Updated `automotive_app_desc.xml` to use `<uses name="template" />` and `<uses name="navigation" />` instead of `media` and removed `appCategory="game"`, eliminating the system *"Not available while driving"* restriction overlay on Android Auto.
-- **Continuous Focus Playback**: Injected Page Visibility API overrides (`document.hidden = false`, `document.visibilityState = 'visible'`) and prevented activity `onPause()` from halting active WebViews, allowing uninterrupted video and audio playback while driving.
-- **PNG Asset Fix**: Fixed AAPT PNG signature errors during release resource compilation.
-- **Production Release Build**: Standardized production release compilation via `./gradlew assembleRelease` generating `AABrowser-2.2.apk`.
+### 🚀 Version 2.3 Major Release
+- **Start Page & UI Cleanup**: Renamed start page headline to **AAYBrowser**, removed legacy sponsor cards & QR codes, and pre-loaded custom speed dial shortcuts for YouTube, Netflix, Prime Video, Twitch, Spotify, and Google Maps.
+- **Android Auto Dock Rail Pinning**: Configured `CATEGORY_MEDIA` and `automotive_app_desc.xml` media & navigation tags to pin `AAYBrowser` to the Android Auto bottom dock rail / status bar.
+- **Unminified Full Build Option**: Provided full uncompressed binary compilation without R8 code stripping.
+- **Package Refactoring**: Migrated source package structure to `com.kishorecheerala.aaybrowser`.
 
 ### 🔴 YouTube Enhancements (Driving Friendly)
 - **Custom YouTube User-Agent**: Configured automatic iPad / Mobile Safari User-Agent override for YouTube (`youtube.com`, `youtu.be`) for optimal web layout.

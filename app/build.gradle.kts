@@ -17,8 +17,8 @@ android {
         applicationId = "com.kishorecheerala.aaybrowser"
         minSdk = 35
         targetSdk = 37
-        versionCode = 8
-        versionName = "2.2"
+        versionCode = 9
+        versionName = "2.3"
 
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
     }
