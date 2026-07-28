@@ -10,7 +10,7 @@
 
 ## 📦 Downloads & Latest Release
 
-* **[Download Latest Release APK (v2.2)](https://github.com/kishorecheerala/AAYBrowser/raw/main/AABrowser-2.2.apk)** - Pre-compiled, driving-friendly `AABrowser` release package.
+* **[Download Latest Release APK (v2.2)](https://github.com/kishorecheerala/AAYBrowser/raw/main/AAYBrowser-2.2.apk)** - Pre-compiled, driving-friendly `AAYBrowser` release package.
 * **[GitHub Releases Page](https://github.com/kishorecheerala/AAYBrowser/releases)**
 
 ---
@@ -51,7 +51,7 @@ To run side-loaded apps on Android Auto:
 2. **Unlock Developer Mode:** Scroll to the bottom and **tap the "Version" section 10 times**. Tap **OK** on the pop-up.
 3. **Open Developer Settings:** Tap the **three-dot menu (⋮)** in top-right corner $\rightarrow$ **Developer settings**.
 4. **Enable Unknown Sources:** Check the **Unknown sources** box.
-5. Install `AABrowser-2.2.apk` on your phone and connect to your car!
+5. Install `AAYBrowser-2.2.apk` on your phone and connect to your car!
 
 ---
 
@@ -68,7 +68,7 @@ cd AAYBrowser
 ```
 
 The Release APK will be generated at:
-`app/build/renamedApks/release/AABrowser-2.2.apk`
+`app/build/renamedApks/release/AAYBrowser-2.2.apk`
 
 ---
 
