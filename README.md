@@ -10,7 +10,7 @@
 
 ## 📦 Downloads & Latest Release
 
-* **[Download Latest APK (v2.2 Custom)](https://github.com/kishorecheerala/AAYBrowser/releases/download/v2.2/AAYBrowser-2.2-custom.apk)** - Pre-compiled, driving-friendly `AAYBrowser` package.
+* **[Download Latest Release APK (v2.2)](https://github.com/kishorecheerala/AAYBrowser/raw/main/AABrowser-2.2.apk)** - Pre-compiled, driving-friendly `AABrowser` release package.
 * **[GitHub Releases Page](https://github.com/kishorecheerala/AAYBrowser/releases)**
 
 ---
@@ -18,13 +18,16 @@
 ## ✨ Key Features & Customizations
 
 - 🎯 **Native Automotive UI:** Designed specifically for car head unit displays using Android Auto native presentation projection.
+- 🚗 **Driving Playback Support:** 
+  - **No Motion Lockouts:** Configured Automotive Template & Navigation metadata to prevent Android Auto from displaying "Not available while driving" lock overlays.
+  - **Seamless Focus Playback:** Injected Page Visibility API overrides (`document.hidden = false`) to keep video and audio playing continuously without auto-pausing during driving focus shifts.
 - 🔴 **Dedicated YouTube Mode (Driving Friendly):**
   - **Custom User-Agent:** Automatically uses iPad / Mobile Safari User-Agent when visiting YouTube for optimal video layout.
   - **Dynamic Distraction Sweeper:** Real-time JavaScript injection sweeps away comments, related video sidebars, end screen popups, and promoter banners.
 - 🛑 **Built-in Ad Blocking:** Integrated request interceptor that blocks major ad network domains (`googleads`, `doubleclick`, `ads.youtube.com`, etc.).
 - 💡 **Car Display Screen Wake Lock:** Keeps both phone screen and car display awake during video playback so your display never dims or sleeps.
 - 🚀 **Pre-configured Speed Dials:** Quick access shortcuts for YouTube, Netflix, Prime Video, Twitch, Spotify, and Google Maps.
-- 🎬 **Immersive DRM Video:** Watch DRM-protected fullscreen video (Widevine L3) — ideal during EV charging or static parked sessions.
+- 🎬 **Immersive DRM Video:** Watch DRM-protected fullscreen video (Widevine L3).
 - 🎨 **Light & AMOLED Black Themes:** Switch between bright light mode and true-black AMOLED dark mode tailored for car displays.
 - 🗂️ **Multi-Tab & Session Restore:** Full multi-tab browser structure paired with automatic tab session recovery on launch.
 - 🧭 **Persistent URL Bar & Quick Action Button:** Customizable floating button and persistent address bar layout options.
@@ -35,8 +38,8 @@
 ## 🛠️ Quick Start & Setup 🚦
 
 #### 🛑 Safety Notice
-* **Driver's Duty:** If you're driving, **DO NOT LOOK AT THIS APP.** Keep your eyes on the road.
-* **Passenger's Use:** This app is intended for passengers or when safely parked.
+* **Driver's Duty:** If you're driving, keep your primary focus on the road.
+* **Passenger's Use:** Intended for passenger enjoyment or driving entertainment.
 
 ---
 
@@ -48,7 +51,7 @@ To run side-loaded apps on Android Auto:
 2. **Unlock Developer Mode:** Scroll to the bottom and **tap the "Version" section 10 times**. Tap **OK** on the pop-up.
 3. **Open Developer Settings:** Tap the **three-dot menu (⋮)** in top-right corner $\rightarrow$ **Developer settings**.
 4. **Enable Unknown Sources:** Check the **Unknown sources** box.
-5. Install `AAYBrowser-2.2-custom.apk` on your phone and connect to your car!
+5. Install `AABrowser-2.2.apk` on your phone and connect to your car!
 
 ---
 
@@ -56,16 +59,16 @@ To run side-loaded apps on Android Auto:
 
 ### Prerequisites
 1. **JDK 17+** configured in environment (`JAVA_HOME`).
-2. **Android SDK API Level 36/37**.
+2. **Android SDK API Level 35-37**.
 
 ```bash
 git clone https://github.com/kishorecheerala/AAYBrowser.git
 cd AAYBrowser
-./gradlew assembleDebug
+./gradlew assembleRelease
 ```
 
-The APK will be generated at:
-`app/build/renamedApks/debug/AABrowser-2.2_debug.apk`
+The Release APK will be generated at:
+`app/build/renamedApks/release/AABrowser-2.2.apk`
 
 ---
 
