@@ -23,6 +23,7 @@ import androidx.webkit.UserAgentMetadata
 import androidx.webkit.WebSettingsCompat
 import androidx.webkit.WebViewFeature
 import com.kishorecheerala.aaybrowser.R
+import com.kishorecheerala.aaybrowser.data.BrowserPreferences
 import com.kishorecheerala.aaybrowser.model.UserAgentProfile
 
 data class BrowserCallbacks(
@@ -101,9 +102,11 @@ fun configureWebView(
                 view: WebView,
                 request: WebResourceRequest
             ): WebResourceResponse? {
-                val host = request.url?.host?.lowercase().orEmpty()
-                if (AD_SERVERS.any { host.contains(it) }) {
-                    return WebResourceResponse("text/plain", "UTF-8", java.io.ByteArrayInputStream(ByteArray(0)))
+                if (BrowserPreferences.isAdBlockerEnabled(view.context)) {
+                    val host = request.url?.host?.lowercase().orEmpty()
+                    if (AD_SERVERS.any { host.contains(it) }) {
+                        return WebResourceResponse("text/plain", "UTF-8", java.io.ByteArrayInputStream(ByteArray(0)))
+                    }
                 }
                 return super.shouldInterceptRequest(view, request)
             }

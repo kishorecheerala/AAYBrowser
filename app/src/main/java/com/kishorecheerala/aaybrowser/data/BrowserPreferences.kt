@@ -48,6 +48,7 @@ object BrowserPreferences {
     private const val KEY_HOME_PAGE_URL = "home_page_url"
     private const val KEY_ALLOWED_LOCATION_HOSTS = "allowed_location_hosts"
     private const val KEY_HIDE_SPONSORS = "hide_sponsors"
+    private const val KEY_AD_BLOCKER_ENABLED = "ad_blocker_enabled"
     private const val DEFAULT_URL = "https://www.google.com"
     private const val SEARCH_TEMPLATE = "https://www.google.com/search?q=%s"
 
@@ -671,6 +672,18 @@ object BrowserPreferences {
         context.getSharedPreferences(PREFS_NAME, Context.MODE_PRIVATE)
             .edit()
             .putBoolean(KEY_HIDE_SPONSORS, hide)
+            .apply()
+    }
+
+    fun isAdBlockerEnabled(context: Context): Boolean {
+        return context.getSharedPreferences(PREFS_NAME, Context.MODE_PRIVATE)
+            .getBoolean(KEY_AD_BLOCKER_ENABLED, true)
+    }
+
+    fun setAdBlockerEnabled(context: Context, enabled: Boolean) {
+        context.getSharedPreferences(PREFS_NAME, Context.MODE_PRIVATE)
+            .edit()
+            .putBoolean(KEY_AD_BLOCKER_ENABLED, enabled)
             .apply()
     }
 

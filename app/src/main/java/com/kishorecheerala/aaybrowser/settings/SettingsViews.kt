@@ -885,118 +885,29 @@ object SettingsViews {
         uaCard.addView(uaInner)
         container.addView(uaCard)
 
-        val sponsorsCard = createStyledCard()
-        val sponsorsInner = LinearLayout(context).apply {
+        val adBlockCard = createStyledCard()
+        val adBlockInner = LinearLayout(context).apply {
             orientation = LinearLayout.VERTICAL
-            setPadding(dp(16), dp(16), dp(16), dp(16))
+            setPadding(dp(8), dp(16), dp(8), dp(16))
         }
-        sponsorsInner.addView(createSectionTitle(context.getString(R.string.settings_sponsors), R.drawable.volunteer_activism_24px, bottomPaddingDp = 4))
-        sponsorsInner.addView(TextView(context).apply {
-            text = context.getString(R.string.settings_sponsors_description)
-            setTextAppearance(com.google.android.material.R.style.TextAppearance_Material3_BodyMedium)
-            setTextColor(onSurfaceColor)
-            setPadding(0, dp(4), 0, 0)
-        })
-        val sponsorUrl = "https://github.com/sponsors/kododake"
-
-        val sponsorsRow = LinearLayout(context).apply {
-            orientation = LinearLayout.HORIZONTAL
-            setPadding(0, dp(16), 0, 0)
-            gravity = Gravity.CENTER_VERTICAL
-        }
-        val sponsorsQrImage = ImageView(context).apply {
-            layoutParams = LinearLayout.LayoutParams(dp(100), dp(100))
-            setPadding(dp(1), dp(1), dp(1), dp(1))
-            setBackgroundColor(Color.WHITE)
-        }
-        sponsorsRow.addView(sponsorsQrImage)
-        val sponsorsCol = LinearLayout(context).apply {
-            orientation = LinearLayout.VERTICAL
-            layoutParams = LinearLayout.LayoutParams(0, LinearLayout.LayoutParams.WRAP_CONTENT, 1f).apply {
-                marginStart = dp(16)
-            }
-        }
-        val sponsorsAddressView = TextView(context).apply {
-            text = sponsorUrl
-            setTextAppearance(com.google.android.material.R.style.TextAppearance_Material3_BodySmall)
-            setTextColor(onSurfaceColor)
-        }
-        val sponsorsActionButton = MaterialButton(context, null, com.google.android.material.R.attr.materialButtonTonalStyle).apply {
-            text = context.getString(R.string.settings_sponsors_open_github_sponsors)
-            setIconResource(R.drawable.favorite_24px)
-            val pink = ColorStateList.valueOf(Color.parseColor("#EC407A"))
-            iconTint = pink
-            iconSize = smallIconSize
-            iconPadding = dp(8)
-            backgroundTintList = ColorStateList.valueOf(getColorFromAttr(com.google.android.material.R.attr.colorSecondaryContainer))
-            setTextColor(getColorFromAttr(com.google.android.material.R.attr.colorOnSecondaryContainer))
-            isClickable = true
-            isFocusable = true
-            setOnClickListener {
-                try {
-                    val intent = Intent(Intent.ACTION_VIEW, Uri.parse(sponsorUrl))
-                    intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
-                    context.startActivity(intent)
-                } catch (_: Exception) {
-                    Toast.makeText(context, R.string.error_generic_message, Toast.LENGTH_SHORT).show()
-                }
-            }
-        }
-        sponsorsCol.addView(sponsorsAddressView)
-        sponsorsCol.addView(sponsorsActionButton)
-        sponsorsRow.addView(sponsorsCol)
-        sponsorsInner.addView(sponsorsRow)
-
-        sponsorsQrImage.setImageBitmap(com.kishorecheerala.aaybrowser.ui.QRUtils.generateQrCode(sponsorUrl, dp(100)))
-
-        sponsorsCard.addView(sponsorsInner)
-        container.addView(sponsorsCard)
-
-        val sponsorsListCard = createStyledCard()
-        val sponsorsListInner = LinearLayout(context).apply {
-            orientation = LinearLayout.VERTICAL
-            setPadding(dp(16), dp(16), dp(16), dp(16))
-        }
-        sponsorsListInner.addView(createSectionTitle(context.getString(R.string.settings_sponsors_list), R.drawable.favorite_24px, bottomPaddingDp = 4))
-        sponsorsListInner.addView(TextView(context).apply {
-            text = context.getString(R.string.settings_sponsors_list_description)
-            setTextAppearance(com.google.android.material.R.style.TextAppearance_Material3_BodyMedium)
-            setTextColor(onSurfaceColor)
-            setPadding(0, dp(4), 0, dp(12))
-        })
-
-        var hideSwitch: SwitchMaterial? = null
-        val hideSponsorsRow = createSettingSwitchRow(
-            title = context.getString(R.string.settings_sponsors_hide_switch_title),
-            description = "",
-            iconRes = R.drawable.settings_24px,
-            isCheckedValue = BrowserPreferences.shouldHideSponsors(context)
+        adBlockInner.addView(
+            createSectionTitle(
+                "Ad Blocker & Security",
+                R.drawable.security_24px,
+                bottomPaddingDp = 8
+            )
+        )
+        val adBlockRow = createSettingSwitchRow(
+            title = "Built-in Ad Blocker",
+            description = "Blocks ad networks, tracking scripts, and intrusive banners automatically.",
+            iconRes = R.drawable.security_24px,
+            isCheckedValue = BrowserPreferences.isAdBlockerEnabled(context)
         ) { isChecked ->
-            if (isChecked) {
-                MaterialAlertDialogBuilder(context)
-                    .setTitle(context.getString(R.string.settings_sponsors_hide_title))
-                    .setMessage(context.getString(R.string.settings_sponsors_hide_message))
-                    .setCancelable(false)
-                    .setPositiveButton(context.getString(R.string.settings_sponsors_hide_keep)) { dialog, _ ->
-                        hideSwitch?.isChecked = false
-                        dialog.dismiss()
-                    }
-                    .setNegativeButton(context.getString(R.string.settings_sponsors_hide_confirm)) { dialog, _ ->
-                        BrowserPreferences.setHideSponsors(context, true)
-                        callbacks.onSponsorsVisibilityChanged()
-                        dialog.dismiss()
-                    }
-                    .show()
-            } else {
-                BrowserPreferences.setHideSponsors(context, false)
-                callbacks.onSponsorsVisibilityChanged()
-            }
+            BrowserPreferences.setAdBlockerEnabled(context, isChecked)
         }
-        hideSwitch = hideSponsorsRow.getChildAt(2) as? SwitchMaterial
-        sponsorsListInner.addView(hideSponsorsRow)
-
-        sponsorsListCard.addView(sponsorsListInner)
-        container.addView(sponsorsListCard)
+        adBlockInner.addView(adBlockRow)
+        adBlockCard.addView(adBlockInner)
+        container.addView(adBlockCard)
 
         val siteDataCard = createStyledCard()
         val siteDataInner = LinearLayout(context).apply {
@@ -1036,17 +947,17 @@ object SettingsViews {
             orientation = LinearLayout.VERTICAL
             setPadding(dp(16), dp(12), dp(16), dp(16))
         }
-        licenseInner.addView(createSectionTitle(context.getString(R.string.settings_license), R.drawable.gplv3, iconWidthDp = 48, iconHeightDp = 24, tintIcon = false, bottomPaddingDp = 8))
+        licenseInner.addView(createSectionTitle("About AAYBrowser", R.drawable.gplv3, iconWidthDp = 48, iconHeightDp = 24, tintIcon = false, bottomPaddingDp = 8))
         licenseInner.addView(TextView(context).apply {
-            text = context.getString(R.string.settings_license_description)
+            text = "AAYBrowser v2.3 - Developed by Kishore Cheerala for Android Auto in-car web & YouTube viewing. Distributed under the GNU General Public License v3.0 (GPLv3)."
             setTextAppearance(com.google.android.material.R.style.TextAppearance_Material3_BodyMedium)
             setTextColor(onSurfaceColor)
             setPadding(0, 0, 0, dp(8))
         })
-        val viewKododakeButton = createListButton(R.id.ViewKododakeButton, context.getString(R.string.kododake_name), R.drawable.ic_github)
+        val viewRepoButton = createListButton(R.id.ViewKododakeButton, "GitHub Repository", R.drawable.ic_github)
         val viewLicenseButton = createListButton(R.id.viewLicenseButton, context.getString(R.string.settings_license), R.drawable.info_24px)
         val viewOssLicensesButton = createListButton(R.id.viewOssLicensesButton, context.getString(R.string.open_source_view_licenses), R.drawable.search_24px)
-        licenseInner.addView(viewKododakeButton)
+        licenseInner.addView(viewRepoButton)
         licenseInner.addView(viewLicenseButton)
         licenseInner.addView(viewOssLicensesButton)
         licenseCard.addView(licenseInner)
@@ -1064,7 +975,7 @@ object SettingsViews {
             }
         }
 
-        viewKododakeButton.setOnClickListener { openUrl("https://github.com/kododake") }
+        viewRepoButton.setOnClickListener { openUrl("https://github.com/kishorecheerala/AAYBrowser") }
         viewLicenseButton.setOnClickListener { openUrl("https://www.gnu.org/licenses/gpl-3.0.html") }
         viewOssLicensesButton.setOnClickListener {
             try {
