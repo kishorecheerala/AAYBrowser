@@ -2,7 +2,7 @@
 
 [![Android](https://img.shields.io/badge/Android-15%2B-3DDC84?style=for-the-badge&logo=android&logoColor=white)](https://www.android.com/)
 [![License](https://img.shields.io/badge/License-GPLv3-blue.svg?style=for-the-badge)](https://www.gnu.org/licenses/gpl-3.0)
-[![Latest Release](https://img.shields.io/badge/Release-v2.3-blue?style=for-the-badge&logo=github)](https://github.com/kishorecheerala/AAYBrowser/releases/tag/v2.3)
+[![Latest Release](https://img.shields.io/badge/Release-v2.4-blue?style=for-the-badge&logo=github)](https://github.com/kishorecheerala/AAYBrowser/releases/tag/v2.4)
 
 **AAYBrowser** is a custom, feature-rich Android Auto web browser built specifically for in-car entertainment, YouTube viewing, and web browsing on car head units. Built as a successor and enhanced fork of the open-source **[AABrowser by kododake](https://github.com/kododake/AABrowser)**, it combines full Android Auto `Presentation` projection with custom distraction-free YouTube enhancements.
 
@@ -10,7 +10,7 @@
 
 ## 📦 Downloads & Latest Release
 
-* **[Download Latest Release APK (v2.3)](https://github.com/kishorecheerala/AAYBrowser/raw/main/AAYBrowser-2.3.apk)** - Pre-compiled, driving-friendly `AAYBrowser` release package.
+* **[Download Latest Release APK (v2.4)](https://github.com/kishorecheerala/AAYBrowser/raw/main/AAYBrowser-2.4.apk)** - Pre-compiled, driving-friendly `AAYBrowser` release package.
 * **[GitHub Releases Page](https://github.com/kishorecheerala/AAYBrowser/releases)**
 
 ---
@@ -51,7 +51,7 @@ To run side-loaded apps on Android Auto:
 2. **Unlock Developer Mode:** Scroll to the bottom and **tap the "Version" section 10 times**. Tap **OK** on the pop-up.
 3. **Open Developer Settings:** Tap the **three-dot menu (⋮)** in top-right corner $\rightarrow$ **Developer settings**.
 4. **Enable Unknown Sources:** Check the **Unknown sources** box.
-5. Install `AAYBrowser-2.3.apk` on your phone and connect to your car!
+5. Install `AAYBrowser-2.4.apk` on your phone and connect to your car!
 
 ---
 
@@ -68,7 +68,7 @@ cd AAYBrowser
 ```
 
 The Release APK will be generated at:
-`app/build/renamedApks/release/AAYBrowser-2.3.apk`
+`app/build/renamedApks/release/AAYBrowser-2.4.apk`
 
 ---
 

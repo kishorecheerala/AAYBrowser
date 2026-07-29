@@ -949,7 +949,7 @@ object SettingsViews {
         }
         licenseInner.addView(createSectionTitle("About AAYBrowser", R.drawable.gplv3, iconWidthDp = 48, iconHeightDp = 24, tintIcon = false, bottomPaddingDp = 8))
         licenseInner.addView(TextView(context).apply {
-            text = "AAYBrowser v2.3 - Developed by Kishore Cheerala for Android Auto in-car web & YouTube viewing. Distributed under the GNU General Public License v3.0 (GPLv3)."
+            text = "AAYBrowser v2.4 - Developed by Kishore Cheerala for Android Auto in-car web & YouTube viewing. Distributed under the GNU General Public License v3.0 (GPLv3)."
             setTextAppearance(com.google.android.material.R.style.TextAppearance_Material3_BodyMedium)
             setTextColor(onSurfaceColor)
             setPadding(0, 0, 0, dp(8))

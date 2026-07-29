@@ -202,7 +202,6 @@ class MainActivity : AppCompatActivity() {
     }
 
     override fun onPause() {
-        uiManager.exitFullscreen()
         super.onPause()
     }
 
@@ -360,17 +359,7 @@ class MainActivity : AppCompatActivity() {
                     permissionManager.showCleartextNavigationDialog(uri, once, host, cancel)
                 }
             },
-            onError = { _, d ->
-                runOnUiThread {
-                    if (isDebugBuild && tab.id == tabManager.activeTabId) {
-                        Toast.makeText(
-                            this,
-                            d ?: getString(R.string.error_generic_message),
-                            Toast.LENGTH_SHORT
-                        ).show()
-                    }
-                }
-            },
+            onError = { _, _ -> },
             onEnterFullscreen = { v, c ->
                 runOnUiThread {
                     uiManager.enterFullscreen(v, c)

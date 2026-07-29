@@ -2,6 +2,13 @@
 
 All notable changes to **AAYBrowser** will be documented in this file.
 
+## [v2.4] - 2026-07-29
+
+### 🚀 Version 2.4 Driving Availability & Toast Error Fixes
+- **Full Driving Mode Availability**: Extended `distractionOptimized="true"` across all activity components and expanded Android Auto intent categories (`CATEGORY_PROJECTION`, `CATEGORY_NAVIGATION`, `CATEGORY_GAME`, `CAR_MODE`, `CAR_DOCK`) to ensure `AAYBrowser` runs smoothly while driving without motion lockout overlays.
+- **Silenced Subresource Toast Errors (`net::ERR_NAME_NOT_RESOLVED`)**: Fixed subresource network/DNS errors triggering annoying Toast error popups during video playback in parking and driving modes.
+- **Continuous Driving Focus Playback**: Preserved fullscreen video state when Android Auto focus state changes occur while driving, and injected Page Visibility API overrides early on page start.
+
 ## [v2.3] - 2026-07-28
 
 ### 🚀 Version 2.3 Major Release

@@ -4,7 +4,7 @@
 - **Project Name:** AAYBrowser (Android Auto Web & YouTube Browser)
 - **Developer & Owner:** Kishore Cheerala (`com.kishorecheerala.aaybrowser`)
 - **Core Objective:** THIS IS NOT A CLONE of the original AABrowser. It is Kishore Cheerala's customized, feature-packed driving-friendly browser for Android Auto.
-- **Current Version:** v2.3 (Version Code 9)
+- **Current Version:** v2.4 (Version Code 10)
 
 ## 🚀 Mandatory Custom Features & Requirements
 Whenever updating or refactoring code in this repository, you MUST preserve and enforce the following custom capabilities:
@@ -37,4 +37,4 @@ Whenever updating or refactoring code in this repository, you MUST preserve and 
    - Zero telemetry / tracking SDKs (no UmamiTracker background network calls).
    - No `FreeDroidWarn` popup libraries or malware/PUP warning signatures.
    - Package / Namespace and Application ID: `com.kishorecheerala.aaybrowser` (prevents Bitdefender / Play Protect "unofficial copy app" warnings).
-   - Release compilation via `./gradlew assembleRelease` generating `AAYBrowser-2.3.apk`.
+   - Release compilation via `./gradlew assembleRelease` generating `AAYBrowser-2.4.apk`.

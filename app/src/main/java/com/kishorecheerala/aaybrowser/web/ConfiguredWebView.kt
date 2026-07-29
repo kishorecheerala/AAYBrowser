@@ -132,6 +132,11 @@ fun configureWebView(
 
             override fun onPageStarted(view: WebView, url: String?, favicon: Bitmap?) {
                 super.onPageStarted(view, url, favicon)
+                url?.let { currentUrl ->
+                    if (currentUrl.contains("youtube.com") || currentUrl.contains("youtu.be")) {
+                        view.evaluateJavascript(YOUTUBE_CSS_INJECTION, null)
+                    }
+                }
                 val stringUrl = url
                 if (stringUrl == null) {
                     return
@@ -183,12 +188,10 @@ fun configureWebView(
                         try {
                             view.loadUrl(assetUrl)
                         } catch (_: Exception) {
-                            callbacks.onError(code, error.description?.toString())
+                            // Error page fallback
                         }
-                        return
                     }
                 }
-                callbacks.onError(error.errorCode, error.description?.toString())
             }
 
             override fun onReceivedHttpError(
@@ -205,9 +208,8 @@ fun configureWebView(
                         try {
                             view.loadUrl(assetUrl)
                         } catch (_: Exception) {
-                            callbacks.onError(code, message)
+                            // Error page fallback
                         }
-                        return
                     }
                 }
             }
