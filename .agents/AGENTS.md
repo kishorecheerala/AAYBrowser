@@ -22,15 +22,16 @@ Whenever updating or refactoring code in this repository, you MUST preserve and 
    - Automatic iPad / Mobile Safari User-Agent override for YouTube domains (`youtube.com`, `youtu.be`).
    - Dynamic Distraction Sweeper script injected to hide comments, sidebars, end screen popups, and promoter banners.
 
-4. **Built-in Ad Blocking Engine:**
+4. **Built-in Ad Blocking Engine & Settings Control:**
    - WebResource request interceptor blocking ad networks (`googleads`, `doubleclick`, `pagead2`, `ads.youtube.com`, `tpc.googlesyndication.com`).
+   - Settings UI toggle switch for Ad Blocker controlled via `BrowserPreferences.isAdBlockerEnabled(context)`.
 
-5. **Display & Power Optimizations:**
+5. **Display, Settings & Power Optimizations:**
    - Screen Wake Lock (`FLAG_KEEP_SCREEN_ON`) active on car display and phone screen.
    - Pre-configured Speed Dials (YouTube, Google, Netflix, Prime Video, Twitch, Google Maps).
    - Light and AMOLED True Black themes for car displays.
    - Global display scaling (40% to 200%).
-   - Clean Start Page UI without sponsors cards or external QR popups.
+   - Clean Start Page & Settings UI: Absolutely zero sponsored content, QR popups, or external developer links. Settings includes a clean **About AAYBrowser** section credited to Kishore Cheerala (`https://github.com/kishorecheerala/AAYBrowser`).
 
 6. **Clean Binary & Security Requirements:**
    - Zero telemetry / tracking SDKs (no UmamiTracker background network calls).
